@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.github.ben-manes.versions' version '0.38.0'
 }
 
 group = 'com.example'
@@ -25,9 +26,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.atomikos:transactions-spring-boot-starter:6.0.0'
+    implementation 'org.xmlunit:xmlunit-core:2.8.2'
+    implementation 'org.xmlunit:xmlunit-assertj3:2.8.2'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
+
 
 
 
@@ -35,6 +42,26 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+tasks.register('validateXml') {
+    doLast {
+        def xmlFiles = fileTree(dir: 'src', include: '**/*.xml')
+
+        xmlFiles.each { file ->
+            ant.taskdef(name: 'xmlvalidate', classname: 'com.oopsconsultancy.xmltask.ant.XmlValidateTask', classpath: configurations.compile.asPath)
+            ant.xmlvalidate(file: file, failonerror: false) {
+                classpath {
+                    pathelement(location: configurations.compile.asPath)
+                }
+            }
+        }
+    }
+}
+
+tasks.register('runSeleniumTest', JavaExec) {
+
+    mainClass = 'com.example.lab4.selenium.MainTest'
+    classpath = sourceSets.main.runtimeClasspath
 }
 
 tasks.named('test') {

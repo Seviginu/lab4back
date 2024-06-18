@@ -1,6 +1,8 @@
 package com.example.lab4.service;
 
 import com.example.lab4.dto.HitResponse;
+import com.example.lab4.mbean.HitCounter;
+import com.example.lab4.mbean.MBeansHitGateway;
 import com.example.lab4.model.User;
 import com.example.lab4.model.hits.Hit;
 import com.example.lab4.model.hits.Point;
@@ -17,6 +19,7 @@ public class HitService {
     private final HitRepository hitRepository;
     private final ValidateHitService validateHitService;
     private final UserService userService;
+    private final MBeansHitGateway beansHitGateway;
 
     private boolean isInside(Point point) {
         double x = point.getX();
@@ -37,6 +40,9 @@ public class HitService {
                 .point(point)
                 .isInside(isInside(point))
                 .build();
+
+        beansHitGateway.processHitEvent(hit);
+
         Hit savedHit = hitRepository.save(hit);
         return ResponseEntity.ok(HitResponse
                 .builder()

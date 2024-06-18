@@ -12,9 +12,9 @@ atomikos:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgresql:5432/main
-    username: bn_keycloak
-    password:
+    url: jdbc:postgresql://localhost:5432/lab4
+    username: postgres
+    password: ipDbP@$$w0rdd_1231
   jpa:
     show-sql: true
     properties:
